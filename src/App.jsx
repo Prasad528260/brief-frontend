@@ -7,15 +7,27 @@ import Verify from "./pages/Verify";
 import Workspace from "./pages/Workspace";
 import Landing from "./pages/Landing";
 import { Toaster } from "react-hot-toast";
+import { setUser,removeUser } from "./store/userSlice";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import ProtectedRoute from "./components/ProtectedRoute";
+import axiosInstance from "./utils/axiosinstance";
 
 function App() {
 
-    const user = useSelector(state => state.user);
-    // console.log("User from Redux:", user);
-  
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const res = await axiosInstance.get("/auth/me");
+        dispatch(setUser(res.data));
+      } catch (err) {
+        console.log(err?.response?.data?.message);
+        dispatch(removeUser());
+      }
+    };
+
+    getUser();
+  }, [dispatch]);
   return (
    <>
       <Routes>
@@ -23,12 +35,11 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Signup />} />
             <Route path="/signup" element={<Signup />} />
-          <Route element={<ProtectedRoute />}>
           
             <Route path="/workspace" element={<Workspace />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/verify" element={<Verify />} />
-          </Route>
+         
         </Route>
       </Routes>
       <Toaster />

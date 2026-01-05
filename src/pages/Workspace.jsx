@@ -5,6 +5,7 @@ import { useSummary } from "../hooks/useSummary";
 import SummaryViewer from "../components/summary/SummaryViewer";
 import Processing from "../components/processing/Processing";
 import axiosInstance from "../utils/axiosinstance";
+import { useSelector } from "react-redux";
 
 export default function Workspace() {
   const { summaries, fetchSummaries } = useSummary();
@@ -15,7 +16,7 @@ export default function Workspace() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-
+let user 
   useEffect(() => {
     fetchSummaries();
   }, []);
@@ -70,7 +71,9 @@ export default function Workspace() {
     const file = e.dataTransfer.files[0];
     if (file && file.type === "text/plain") setSelectedFile(file);
   };
-
+  
+ user = useSelector((state) => state.user);
+// console.log("User from Redux:", user);
   return (
     <div className="h-screen bg-black flex overflow-hidden">
       <div className={`${isSidebarOpen ? "w-64" : "w-0"} ...`}>
