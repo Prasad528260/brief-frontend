@@ -16,7 +16,6 @@ export default function SummarySidebar({
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
           <div className="p-4 border-b border-zinc-900 flex-shrink-0">
-           
             <button
               onClick={onNew}
               className="w-full py-2 px-3 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-xs font-bold rounded-lg hover:from-blue-500 hover:to-violet-500 transition-all flex items-center justify-center gap-1.5"
@@ -26,8 +25,8 @@ export default function SummarySidebar({
             </button>
           </div>
 
-          {/* History List - Scrollable */}
-          <div className="flex-1 overflow-y-auto p-3 min-h-0">
+          {/* History List - Scrollable with max height */}
+          <div className="flex-1 overflow-y-auto p-3 max-h-[calc(100vh-240px)]">
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 px-2">
               History
             </p>
@@ -53,8 +52,8 @@ export default function SummarySidebar({
             )}
           </div>
 
-          {/* Sidebar Footer - Sticky at Bottom */}
-          <div className="p-3 border-t border-zinc-900 flex-shrink-0 mt-auto">
+          {/* Sidebar Footer - Always Visible at Bottom */}
+          <div className="p-3 border-t border-zinc-900 flex-shrink-0">
             <button
               onClick={() => navigate("/profile")}
               className="w-full text-left px-3 py-2 rounded-lg text-xs text-gray-400 hover:bg-zinc-900 hover:text-gray-300 transition-all"
