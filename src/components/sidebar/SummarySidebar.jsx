@@ -1,14 +1,21 @@
-import { useState } from 'react';
-import { Plus, Zap, Menu, X, Upload, FileText } from 'lucide-react';
+import { useState } from "react";
+import { Plus, Zap, Menu, X, Upload, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-
-export default function SummarySidebar({ summaries, onSelect, onNew, isOpen, setIsOpen }) {
+export default function SummarySidebar({
+  summaries,
+  onSelect,
+  onNew,
+  isOpen,
+  setIsOpen,
+}) {
+  const navigate = useNavigate();
   return (
     <>
       {isOpen && (
-        <>
+        <div className="flex flex-col h-full">
           {/* Sidebar Header */}
-          <div className="p-4 border-b border-zinc-900">
+          <div className="p-4 border-b border-zinc-900 flex-shrink-0">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-violet-600 rounded-lg flex items-center justify-center">
                 <Zap className="w-4 h-4 text-white" strokeWidth={2.5} />
@@ -24,8 +31,8 @@ export default function SummarySidebar({ summaries, onSelect, onNew, isOpen, set
             </button>
           </div>
 
-          {/* History List */}
-          <div className="flex-1 overflow-y-auto p-3">
+          {/* History List - Scrollable */}
+          <div className="flex-1 overflow-y-auto p-3 min-h-0">
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 px-2">
               History
             </p>
@@ -44,18 +51,23 @@ export default function SummarySidebar({ summaries, onSelect, onNew, isOpen, set
               </div>
             ) : (
               <div className="px-3 py-2 text-gray-500 text-sm italic">
-                No summaries yet. Click <span className="font-semibold">New Summary</span> to create one.
+                No summaries yet. Click{" "}
+                <span className="font-semibold">New Summary</span> to create
+                one.
               </div>
             )}
           </div>
 
-          {/* Sidebar Footer */}
-          <div className="p-3 border-t border-zinc-900">
-            <button className="w-full text-left px-3 py-2 rounded-lg text-xs text-gray-400 hover:bg-zinc-900 hover:text-gray-300 transition-all">
+          {/* Sidebar Footer - Sticky at Bottom */}
+          <div className="p-3 border-t border-zinc-900 flex-shrink-0 mt-auto">
+            <button
+              onClick={() => navigate("/profile")}
+              className="w-full text-left px-3 py-2 rounded-lg text-xs text-gray-400 hover:bg-zinc-900 hover:text-gray-300 transition-all"
+            >
               Profile Settings
             </button>
           </div>
-        </>
+        </div>
       )}
     </>
   );

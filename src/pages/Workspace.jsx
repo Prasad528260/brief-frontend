@@ -6,6 +6,8 @@ import SummaryViewer from "../components/summary/SummaryViewer";
 import Processing from "../components/processing/Processing";
 import axiosInstance from "../utils/axiosinstance";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import TokenLimitMessage from "../components/summary/TokenLimitMessage";
 
 export default function Workspace() {
   const { summaries, fetchSummaries } = useSummary();
@@ -16,27 +18,33 @@ export default function Workspace() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-let user 
+  const [tokenExceeded, setTokenExceeded] = useState(false);
+
+  const user = useSelector((state) => state.user.user);
+
   useEffect(() => {
     fetchSummaries();
   }, []);
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file && file.type === "text/plain") setSelectedFile(file);
-    else alert("Please select a .txt file");
+    else toast.error("Please select a .txt file");
   };
 
   const handleUpload = async () => {
     if (!selectedFile) return;
 
     if (!startDate || !endDate) {
-      alert("Please select both start and end dates");
+      toast.error("Please select both start and end dates");
       return;
     }
 
     if (new Date(startDate) > new Date(endDate)) {
-      alert("Start date cannot be after end date");
+      toast.error("Start date cannot be after end date");
       return;
+    }
+    if (user?.token <= 0) {
+      setTokenExceeded(true);
     }
 
     setIsProcessing(true);
@@ -58,7 +66,7 @@ let user
       // console.log("Current summary:", currentSummary);
     } catch (err) {
       console.error("Upload failed:", err);
-      alert(err?.response?.data?.message || "Upload failed");
+      toast.error(err?.response?.data?.message || "Upload failed");
     } finally {
       setIsProcessing(false);
       setSelectedFile(null);
@@ -71,9 +79,8 @@ let user
     const file = e.dataTransfer.files[0];
     if (file && file.type === "text/plain") setSelectedFile(file);
   };
-  
- user = useSelector((state) => state.user);
-// console.log("User from Redux:", user);
+
+  // console.log("User from Redux:", user);
   return (
     <div className="h-screen bg-black flex overflow-hidden">
       <div className={`${isSidebarOpen ? "w-64" : "w-0"} ...`}>
@@ -89,6 +96,9 @@ let user
         {/* Top Bar stays same */}
 
         <div className="flex-1 overflow-y-auto p-6">
+          {tokenExceeded && (
+            <TokenLimitMessage setTokenExceeded={setTokenExceeded} />
+          )}
           {!currentSummary && !isProcessing && (
             <>
               <div className="flex gap-4 mb-4">
