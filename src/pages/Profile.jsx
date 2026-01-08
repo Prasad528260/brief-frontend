@@ -15,24 +15,32 @@ import Logo from "../components/Logo";
 import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
- 
-  const { user, loading, error: userError, logout, updateUser } = useUser();
+  const { updateUser, loading, error: updateError, logout, user } = useUser();
   const navigate = useNavigate();
- const [isEditing, setIsEditing] = useState(false);
-  const [editedName, setEditedName] = useState(user?.name || "");
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedName, setEditedName] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (user?.name) {
+      setEditedName(user.name);
+    }
+  }, [user]);
 
   const handleEdit = () => {
     setIsEditing(true);
-    setEditedName(user.name);
+    setEditedName(user?.name || "");
     setError("");
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    setEditedName(user.name);
+    setEditedName(user?.name || "");
     setError("");
   };
+
+  // console.log(user);
 
   const handleSave = async () => {
     if (!editedName.trim()) {
@@ -49,40 +57,53 @@ export default function Profile() {
     }
   };
 
-  const handleVerifyEmail = () => {
-    console.log("Verify email clicked");
-  };
-  useEffect(() => {
-  if (!loading && !user) {
-    navigate("/login", { replace: true });
-  }
-}, [user, loading, navigate]);
-  useEffect(() => {
-    if (user) {
-      setEditedName(user.name);
-    }
-  }, [user]);
-  if (loading) return <Loader2 className="animate-spin text-white" size={24} />;
-  if (userError)
+  // 🔥 block UI until user is actually loaded
+  if (loading || !user) {
     return (
-      <div className="text-red-500">
-        {typeof userError === "string"
-          ? userError
-          : userError.message || "An error occurred"}
+      <div className="min-h-screen bg-black flex items-center justify-center p-4">
+        <Loader2 className="animate-spin text-white" size={24} />
       </div>
     );
+  }
 
+  if (updateError)
+    return (
+      <div className="text-red-500">
+        {typeof updateError === "string" ? updateError : "An error occurred"}
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
-        {/* Header */}
         <Logo heading="Profile" paragraph="Manage your account settings" />
 
-        {/* Profile Card */}
         <div className="bg-zinc-950 border border-zinc-900 rounded-xl p-6 shadow-2xl">
           <div className="space-y-5">
-            {/* Name Field */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">
+                Available Tokens
+              </label>
+              <div className="flex items-center justify-between bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-violet-600 rounded-lg flex items-center justify-center">
+                    <Zap className="w-4 h-4 text-white" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <p className="text-lg font-bold text-white">
+                      {user?.token || 0}
+                    </p>
+                    <p className="text-xs text-gray-500">tokens remaining</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => navigate("/pricing")}
+                  className="px-3 py-1.5 bg-zinc-800 border border-zinc-700 text-xs text-gray-300 font-semibold rounded-lg hover:bg-zinc-700 hover:text-white transition-all"
+                >
+                  Get More
+                </button>
+              </div>
+            </div>
             <div>
               <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">
                 Full Name
@@ -91,6 +112,7 @@ export default function Profile() {
                 <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
                   <User className="w-4 h-4" />
                 </div>
+
                 {isEditing ? (
                   <input
                     type="text"
@@ -115,7 +137,6 @@ export default function Profile() {
               {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
             </div>
 
-            {/* Email Field */}
             <div>
               <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">
                 Email Address
@@ -130,11 +151,11 @@ export default function Profile() {
               </div>
             </div>
 
-            {/* Email Verification Status */}
             <div>
               <label className="block text-xs font-semibold text-gray-400 mb-1.5 uppercase tracking-wide">
                 Verification Status
               </label>
+
               <div className="flex items-center justify-between bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2.5">
                 <div className="flex items-center gap-2">
                   {user?.isEmailVerified ? (
@@ -153,18 +174,9 @@ export default function Profile() {
                     </>
                   )}
                 </div>
-                {!user?.isEmailVerified && (
-                  <button
-                    onClick={handleVerifyEmail}
-                    className="text-xs text-blue-400 hover:text-blue-300 font-semibold transition-colors"
-                  >
-                    Verify
-                  </button>
-                )}
               </div>
             </div>
 
-            {/* Action Buttons */}
             {isEditing ? (
               <div className="flex gap-2 mt-6">
                 <button
@@ -174,6 +186,7 @@ export default function Profile() {
                   <Save className="w-4 h-4 mr-1.5" />
                   Save Changes
                 </button>
+
                 <button
                   onClick={handleCancel}
                   className="px-4 py-2.5 bg-zinc-900 border border-zinc-800 text-gray-400 text-sm font-bold rounded-lg hover:border-zinc-700 hover:text-gray-300 focus:outline-none transition-all flex items-center justify-center"
@@ -192,12 +205,11 @@ export default function Profile() {
             )}
           </div>
 
-          {/* Footer */}
           <div className="mt-6 text-center border-t border-zinc-900 pt-5">
             <button
               onClick={() => {
                 logout();
-                navigate('/login');
+                navigate("/login");
               }}
               className="text-red-400 hover:text-red-300 font-semibold text-xs transition-colors"
             >

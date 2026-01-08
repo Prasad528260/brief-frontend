@@ -19,7 +19,8 @@ function App() {
     const getUser = async () => {
       try {
         const res = await axiosInstance.get("/auth/me");
-        dispatch(setUser(res.data));
+        // console.log(res.data.data);
+        dispatch(setUser(res.data.data));
       } catch (err) {
         console.log(err?.response?.data?.message);
         dispatch(removeUser());

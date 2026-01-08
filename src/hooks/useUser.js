@@ -10,35 +10,34 @@ const useUser = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [checkedAuth, setCheckedAuth] = useState(false);
 
   useEffect(() => {
-    if (checkedAuth || user) return;
-
     const fetchUser = async () => {
       try {
-        const res = await axiosInstance.get("/profile/get-profile");
+        const res = await axiosInstance.get("/auth/me");
         dispatch(setUser(res.data.data));
       } catch (err) {
         setError(err?.response?.data?.message || "Unauthorized");
         dispatch(removeUser());
       } finally {
         setLoading(false);
-        setCheckedAuth(true);
       }
     };
 
     fetchUser();
-  }, [checkedAuth, user, dispatch]);
+  }, [dispatch]);
 
   const logout = async () => {
-    await axiosInstance.post("/auth/logout");
+    await axiosInstance.post("/auth/logout", {});
     dispatch(removeUser());
     toast.success("Logged out");
   };
 
   const updateUser = async (name) => {
-    const res = await axiosInstance.put("/profile/update-name", { name });
+    const res = await axiosInstance.put(
+      "/profile/update-name",
+        { name }
+    );
     dispatch(setUser({ ...user, name }));
     toast.success("Name updated");
     return res.data.data;
