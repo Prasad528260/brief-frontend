@@ -7,13 +7,13 @@ import Verify from "./pages/Verify";
 import Workspace from "./pages/Workspace";
 import Landing from "./pages/Landing";
 import { Toaster } from "react-hot-toast";
-import { setUser,removeUser } from "./store/userSlice";
+import { setUser, removeUser } from "./store/userSlice";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import axiosInstance from "./utils/axiosinstance";
+import Premium from "./pages/Premium";
 
 function App() {
-
   const dispatch = useDispatch();
   useEffect(() => {
     const getUser = async () => {
@@ -30,17 +30,17 @@ function App() {
     getUser();
   }, [dispatch]);
   return (
-   <>
+    <>
       <Routes>
         <Route path="/" element={<Body />}>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Signup />} />
-            <Route path="/signup" element={<Signup />} />
-          
-            <Route path="/workspace" element={<Workspace />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/verify" element={<Verify />} />
-         
+          <Route path="/signup" element={<Signup />} />
+
+          <Route path="/workspace" element={<Workspace />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/verify" element={<Verify />} />
+          <Route path="/premium" element={<Premium />} />
         </Route>
       </Routes>
       <Toaster />
