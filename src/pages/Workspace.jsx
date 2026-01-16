@@ -20,7 +20,7 @@ export default function Workspace() {
   const [endDate, setEndDate] = useState("");
   const [tokenExceeded, setTokenExceeded] = useState(false);
 
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     fetchSummaries();

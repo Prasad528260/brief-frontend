@@ -1,6 +1,33 @@
 import { Zap } from "lucide-react";
-
+import axiosInstance from "../utils/axiosInstance";
+import toast from "react-hot-toast";
 export default function PremiumPlanCard() {
+  const handleBuyPremium = async() => {
+    try {   
+      const response = await axiosInstance.post("/payment/create");
+      console.log(response.data.data);
+      const order = response.data.data;
+      const key_id = response.data.key_id;
+      const options = {
+        key: key_id, // Replace with your Razorpay key_id
+        amount: order.amount, // Amount is in currency subunits.
+        currency: order.currency,
+        name: "BriefAi",
+        description: 'Premium Plan',
+        order_id: order.orderId, // Your success URL
+        prefill: {
+          name: order.notes.name,
+        },
+        theme: {
+          color: '#F37224'
+        },
+      };
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  }
   return (
     <div className="max-w-sm mx-auto px-4">
       <div className="relative rounded-2xl border border-zinc-900 bg-zinc-950 overflow-hidden shadow-xl">
@@ -42,7 +69,7 @@ export default function PremiumPlanCard() {
           </ul>
 
           {/* CTA */}
-          <button
+          <button onClick={() => handleBuyPremium()}
             className="mt-auto w-full py-3.5 rounded-xl font-semibold text-white
         bg-gradient-to-r from-blue-600 to-violet-600
         hover:from-blue-500 hover:to-violet-500
