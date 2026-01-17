@@ -3,7 +3,7 @@ import PremiumPlanCard from '../components/PremiumPlanCard'
 
 const Premium = () => {
   return (
-    <div className="bg-black p-8">
+    <div className="min-h-screen bg-black">
       <PremiumPlanCard />
     </div>
   )
