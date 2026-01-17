@@ -32,9 +32,11 @@ export default function Navbar() {
             <Zap className="w-5 h-5 text-white" strokeWidth={2.5} />
           </div>
         </div>
+        <Link to="/workspace">
         <h1 className="text-white font-bold text-lg tracking-tight">
           Brief AI
         </h1>
+        </Link>
       </div>
 
       {/* Spacer */}
