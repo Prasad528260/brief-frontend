@@ -22,16 +22,17 @@ export default function Workspace() {
   const [selectedModel, setSelectedModel] = useState("groq"); // Default to groq
 
   const user = useSelector((state) => state.user);
+  console.log("USER:", user);
+
   console.log("USER PLAN:", user?.plan);
 
   useEffect(() => {
-  if (!user?.plan) return; 
+    if (!user?.plan) return;
 
-  if (user.plan !== "premium" && selectedModel === "openai") {
-    setSelectedModel("groq");
-  }
-}, [user?.plan]);
-
+    if (user.plan !== "premium" && selectedModel === "openai") {
+      setSelectedModel("groq");
+    }
+  }, [user?.plan]);
 
   useEffect(() => {
     fetchSummaries();
@@ -45,13 +46,13 @@ export default function Workspace() {
 
   const handleModelChange = (e) => {
     const model = e.target.value;
-    
+
     // Check if user is trying to select OpenAI without premium plan
     if (model === "openai" && user?.plan !== "premium") {
       toast.error("OpenAI model is only available for premium users");
       return;
     }
-    
+
     setSelectedModel(model);
   };
 
@@ -147,24 +148,24 @@ export default function Workspace() {
 
                 {/* Model Selection Dropdown */}
                 <div className="flex flex-col">
-                  <label className="text-sm text-gray-400 mb-1">
-                    AI Model
-                  </label>
+                  <label className="text-sm text-gray-400 mb-1">AI Model</label>
                   <select
                     value={selectedModel}
                     onChange={handleModelChange}
                     className="bg-zinc-900 text-white border border-zinc-700 rounded px-3 py-2 cursor-pointer"
                   >
                     <option value="groq">Groq (Free)</option>
-                    <option 
-                      value="openai" 
+                    <option
+                      value="openai"
                       disabled={user?.plan !== "premium"}
-                      className={user?.plan !== "premium" ? "text-gray-500" : ""}
+                      className={
+                        user?.plan !== "premium" ? "text-gray-500" : ""
+                      }
                     >
                       OpenAI {user?.plan !== "premium" ? "(Premium Only)" : ""}
                     </option>
                   </select>
-                  
+
                   {/* Premium Badge for Free Users */}
                   {user?.plan !== "premium" && selectedModel === "groq" && (
                     <span className="text-xs text-amber-500 mt-1">
