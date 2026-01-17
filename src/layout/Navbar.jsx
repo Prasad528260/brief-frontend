@@ -1,4 +1,4 @@
-import { Zap } from 'lucide-react';
+import { Zap } from "lucide-react";
 
 export default function Navbar() {
   return (
@@ -21,7 +21,7 @@ export default function Navbar() {
         <div className="particle particle-6"></div>
       </div>
 
-      {/* Logo Section */}
+      {/* Left: Logo */}
       <div className="relative flex items-center gap-3 z-10">
         <div className="relative group">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-violet-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
@@ -29,8 +29,23 @@ export default function Navbar() {
             <Zap className="w-5 h-5 text-white" strokeWidth={2.5} />
           </div>
         </div>
-        <h1 className="text-white font-bold text-lg tracking-tight">Brief AI</h1>
+        <h1 className="text-white font-bold text-lg tracking-tight">
+          Brief AI
+        </h1>
       </div>
+
+      {/* Spacer */}
+      <div className="flex-1"></div>
+
+      {/* Right: Premium */}
+      <Link
+        to="/premium"
+        className="relative z-10 px-4 py-1.5 rounded-full text-sm font-semibold
+               bg-gradient-to-r from-yellow-400 to-orange-500 text-black
+               hover:from-yellow-300 hover:to-orange-400 transition"
+      >
+        ✨ Premium
+      </Link>
     </nav>
   );
 }
