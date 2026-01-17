@@ -1,5 +1,5 @@
 import { Zap } from "lucide-react";
-import axiosInstance from "../utils/axiosInstance";
+import axiosInstance from "../utils/axiosinstance.js";
 import toast from "react-hot-toast";
 export default function PremiumPlanCard() {
   const handleBuyPremium = async() => {
