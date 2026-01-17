@@ -22,11 +22,16 @@ export default function Workspace() {
   const [selectedModel, setSelectedModel] = useState("groq"); // Default to groq
 
   const user = useSelector((state) => state.user);
+  console.log("USER PLAN:", user?.plan);
+
   useEffect(() => {
-    if (user?.plan !== "premium" && selectedModel === "openai") {
-      setSelectedModel("groq");
-    }
-  }, [user?.plan]);
+  if (!user?.plan) return; 
+
+  if (user.plan !== "premium" && selectedModel === "openai") {
+    setSelectedModel("groq");
+  }
+}, [user?.plan]);
+
 
   useEffect(() => {
     fetchSummaries();
