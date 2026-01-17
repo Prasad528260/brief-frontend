@@ -13,9 +13,9 @@ export default function PremiumPlanCard() {
   const verifyPremiumUser = async () => {
     try {
       const response = await axiosInstance.get("/payment/verify");
-      // console.log(response.data.data);
-      if (response.data.data.isPremium) {
-        toast.success(response.data.message);
+      console.log(response?.data);
+      if (response?.data?.data?.plan === "premium") {
+        toast.success(response?.data?.message);
         setIsUserPremium(true);
       }
     } catch (error) {

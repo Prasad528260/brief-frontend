@@ -1,7 +1,9 @@
 import { Zap } from "lucide-react";
 import { Link } from "react-router-dom";
+import {useSelector} from "react-redux";
 
 export default function Navbar() {
+  const {user} = useSelector((state) => state.user);
   return (
     <nav className="relative bg-zinc-950 border-b border-zinc-900 h-16 px-6 flex items-center overflow-hidden">
       {/* Animated Background Lines */}
@@ -39,14 +41,16 @@ export default function Navbar() {
       <div className="flex-1"></div>
 
       {/* Right: Premium */}
-      <Link
-        to="/premium"
-        className="relative z-10 px-4 py-1.5 rounded-full text-sm font-semibold
+      {user && user?.plan !== "premium" ? (
+        <Link
+          to="/premium"
+          className="relative z-10 px-4 py-1.5 rounded-full text-sm font-semibold
                bg-gradient-to-r from-yellow-400 to-orange-500 text-black
                hover:from-yellow-300 hover:to-orange-400 transition"
       >
         ✨ Premium
       </Link>
+      ) : null}
     </nav>
   );
 }
