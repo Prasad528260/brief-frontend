@@ -19,16 +19,30 @@ export default function Workspace() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [tokenExceeded, setTokenExceeded] = useState(false);
+  const [selectedModel, setSelectedModel] = useState("groq"); // Default to groq
 
   const user = useSelector((state) => state.user);
 
   useEffect(() => {
     fetchSummaries();
   }, []);
+
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file && file.type === "text/plain") setSelectedFile(file);
     else toast.error("Please select a .txt file");
+  };
+
+  const handleModelChange = (e) => {
+    const model = e.target.value;
+    
+    // Check if user is trying to select OpenAI without premium plan
+    if (model === "openai" && user?.plan !== "premium") {
+      toast.error("OpenAI model is only available for premium users");
+      return;
+    }
+    
+    setSelectedModel(model);
   };
 
   const handleUpload = async () => {
@@ -43,8 +57,10 @@ export default function Workspace() {
       toast.error("Start date cannot be after end date");
       return;
     }
+
     if (user?.token <= 0) {
       setTokenExceeded(true);
+      return;
     }
 
     setIsProcessing(true);
@@ -53,17 +69,13 @@ export default function Workspace() {
     try {
       const formData = new FormData();
       formData.append("file", selectedFile);
-
-      // same as Postman
       formData.append("startDate", startDate);
       formData.append("endDate", endDate);
+      formData.append("model", selectedModel); // Add selected model to formData
 
       const res = await axiosInstance.post("/summary/file-upload", formData);
-      // console.log("Upload response:", res?.data);
       let summary = res?.data?.data;
-      // console.log("Summary object:", summary);
       setCurrentSummary(summary);
-      // console.log("Current summary:", currentSummary);
     } catch (err) {
       console.error("Upload failed:", err);
       toast.error(err?.response?.data?.message || "Upload failed");
@@ -80,7 +92,6 @@ export default function Workspace() {
     if (file && file.type === "text/plain") setSelectedFile(file);
   };
 
-  // console.log("User from Redux:", user);
   return (
     <div className="h-screen bg-black flex overflow-hidden">
       <div className={`${isSidebarOpen ? "w-64" : "w-0"} ...`}>
@@ -123,7 +134,36 @@ export default function Workspace() {
                     className="bg-zinc-900 text-white border border-zinc-700 rounded px-3 py-2"
                   />
                 </div>
+
+                {/* Model Selection Dropdown */}
+                <div className="flex flex-col">
+                  <label className="text-sm text-gray-400 mb-1">
+                    AI Model
+                  </label>
+                  <select
+                    value={selectedModel}
+                    onChange={handleModelChange}
+                    className="bg-zinc-900 text-white border border-zinc-700 rounded px-3 py-2 cursor-pointer"
+                  >
+                    <option value="groq">Groq (Free)</option>
+                    <option 
+                      value="openai" 
+                      disabled={user?.plan !== "premium"}
+                      className={user?.plan !== "premium" ? "text-gray-500" : ""}
+                    >
+                      OpenAI {user?.plan !== "premium" ? "(Premium Only)" : ""}
+                    </option>
+                  </select>
+                  
+                  {/* Premium Badge for Free Users */}
+                  {user?.plan !== "premium" && selectedModel === "groq" && (
+                    <span className="text-xs text-amber-500 mt-1">
+                      💎 Upgrade to Premium for OpenAI access
+                    </span>
+                  )}
+                </div>
               </div>
+
               <UploadBox
                 selectedFile={selectedFile}
                 onFileSelect={handleFileSelect}
