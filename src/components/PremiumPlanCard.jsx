@@ -2,9 +2,15 @@ import { Zap } from "lucide-react";
 import axiosInstance from "../utils/axiosinstance.js";
 import toast from "react-hot-toast";
 import { useState } from "react";
+import { useEffect } from "react";
 export default function PremiumPlanCard() {
+
+  const [isUserPremium, setIsUserPremium] = useState(false);
+  useEffect(() => {
+    verifyPremiumUser();
+  }, []);
+
   const verifyPremiumUser = async () => {
-    const [isUserPremium, setIsUserPremium] = useState(false);
     try {
       const response = await axiosInstance.get("/payment/verify");
       // console.log(response.data.data);
@@ -16,7 +22,7 @@ export default function PremiumPlanCard() {
       toast.error("Something went wrong");
     }
   };
-
+  
   const handleBuyPremium = async () => {
     try {
       const response = await axiosInstance.post("/payment/create");
