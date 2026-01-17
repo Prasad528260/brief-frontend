@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {useSelector} from "react-redux";
 
 export default function Navbar() {
-  const {user} = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user);
   return (
     <nav className="relative bg-zinc-950 border-b border-zinc-900 h-16 px-6 flex items-center overflow-hidden">
       {/* Animated Background Lines */}
